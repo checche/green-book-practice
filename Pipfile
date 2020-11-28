@@ -12,6 +12,10 @@ theano = "*"
 numpy = "*"
 matplotlib = "*"
 jupyter = "*"
+autopep8 = "*"
+flake8 = "*"
+plotly = "*"
+arviz = "*"
 
 [requires]
 python_version = "3.8"
