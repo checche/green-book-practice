@@ -41,5 +41,30 @@ with pm.Model() as model:
 az.plot_trace(idata)
 az.summary(idata)
 # %%
-plt.scatter(data['x'], data['y'])
+# サンプル列の表示
+display(idata.posterior["beta1"])
+display(idata.posterior["beta2"])
 # %%
+# 推定されたパラメータの分布やr_hatの表示
+az.plot_forest(idata, r_hat=True)
+az.plot_posterior(idata)
+
+# %%
+samples = np.stack([
+    idata.posterior['beta1'].values.flatten(),
+    idata.posterior['beta2'].values.flatten()
+])
+samples.shape
+# %%
+# 同時事後分布
+fig, ax = plt.subplots()
+ax.set(xlabel='beta1', ylabel='beta2')
+ax.scatter(samples[0], samples[1], alpha=0.5, s=1)
+
+# %%
+predict = np.exp(1.563 + 0.082 * data['x'])
+# %%
+fig, ax = plt.subplots()
+ax.set(xlabel='x', ylabel='y', xlim=(2, 8))
+ax.scatter(data['x'], data['y'])
+ax.plot(predict)
