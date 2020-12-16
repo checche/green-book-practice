@@ -16,6 +16,7 @@ autopep8 = "*"
 flake8 = "*"
 plotly = "*"
 arviz = "*"
+graphviz = "*"
 
 [requires]
 python_version = "3.8"
