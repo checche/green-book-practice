@@ -55,6 +55,9 @@ with pm.Model() as model:
     )
 
 # %%
+pm.model_to_graphviz(model)
+
+# %%
 # MCMCの結果や過程をプロット
 # az.plot_trace(idata)
 az.summary(idata)
