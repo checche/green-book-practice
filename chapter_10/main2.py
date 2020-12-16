@@ -11,13 +11,16 @@ import pymc3 as pm
 data = pd.read_csv('d1.csv')
 
 # %%
-display(data)
-display(data.describe())
+display(
+    data,
+    data.describe()
+)
 # %%
 # 個体差と植木鉢差がある。
-px.scatter(data, x='id', y='y', color='pot')
-px.box(data, x='pot', y='y', color='f')
-
+display(
+    px.scatter(data, x='id', y='y', color='pot'),
+    px.box(data, x='pot', y='y', color='f')
+)
 # %%
 # preprocess
 codes, uniques = pd.factorize(data['pot'], sort=True)
@@ -58,10 +61,12 @@ az.summary(idata)
 
 # %%
 # サンプル列の表示
-display(idata.posterior["beta1"])
-display(idata.posterior["beta2"])
-display(idata.posterior["s"])
-display(idata.posterior["s_p"])
+display(
+    idata.posterior["beta1"],
+    idata.posterior["beta2"],
+    idata.posterior["s"],
+    idata.posterior["s_p"]
+)
 
 # %%
 # 推定されたパラメータの分布やr_hatの表示
@@ -75,24 +80,27 @@ s_means = idata.posterior['s'].values.mean(axis=1)
 s_p_means = idata.posterior['s_p'].values.mean(axis=1)
 r_means = idata.posterior['r'].values.mean(axis=1)
 r_p_means = idata.posterior['r_p'].values.mean(axis=1)
-display(*[
+display(
     beta1_means,
     beta2_means,
     s_means,
     s_p_means,
     r_means,
     r_p_means
-])
+)
 
 # %%
 # r, r_pの生成
 r_sims = np.array([np.random.normal(loc=0, scale=s_mean, size=100)
                    for s_mean in s_means])
-r_sims
+
 
 r_p_sims = np.array([np.random.normal(loc=0, scale=s_p_mean, size=10)
                      for s_p_mean in s_p_means])
-r_p_sims
+display(
+    r_sims,
+    r_p_sims
+)
 
 
 # %%
@@ -103,7 +111,7 @@ lambda_sims = np.exp(
     + r_sims
     + r_p_sims[:, data['pot_int']]
 )
-lambda_sims
+lambda_sims.shape
 
 # %%
 # 各個体の平均値を算出
@@ -111,15 +119,14 @@ lambda_sim = lambda_sims.mean(axis=0)
 lambda_sim
 
 # %%
-
 data_copied = data.copy()
 data_copied['is_raw'] = False
 data_copied['y'] = lambda_sim
 metrics = pd.concat([data, data_copied])
 metrics
+
 # %%
-display(*[
-    px.scatter(data_copied, x='id', y='y', color='pot'),
-    px.box(data_copied, x='pot', y='y', color='f'),
-])
-# %%
+display(
+    px.scatter(metrics, x='id', y='y', color='pot', facet_col='is_raw'),
+    px.box(metrics, x='pot', y='y', color='f', facet_col='is_raw'),
+)
